@@ -24,6 +24,22 @@ class StudentsAttendance extends Model
         'year'
     ];
 
+
+    /**
+     * Columns of StudentsAttendance that we need in the datatable
+     * For more options take a look to https://yajrabox.com/docs/laravel-datatables/master/html-builder-column
+     *
+     * @return array
+     */
+    public static function datatableColumns() {
+        return [
+            ['data' => 'id', 'name' => 'id', 'title' => 'Id'],
+            ['data' => 'fullName', 'name' => 'fullName', 'title' => 'Name'],
+            ['data' => 'attendance', 'name' => 'attendance', 'title' => 'Attendance'],
+            ['data' => 'date', 'name' => 'date', 'title' => 'Date'],
+        ];
+    }
+
     public function studentsClass() {
         return $this->belongsTo('App\StudentsClass');
     }

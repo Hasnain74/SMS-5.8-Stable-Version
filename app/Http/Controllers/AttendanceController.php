@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\DmcSetup;
+use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\Html\Builder;
 
 
 class AttendanceController extends Controller
@@ -49,24 +51,50 @@ class AttendanceController extends Controller
         return json_encode($students_id);
     }
 
+    /**
+     * @param Builder $builder
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
+    public function student_attendance_registers(Builder $builder)
+    {
+        $query = StudentsAttendance::orderBy('id', 'desc');
 
-    public function student_attendance_registers() {
+        //Ajax request made by {!! $datatable->scripts() !!} when the page is ready
+        if (request()->ajax())
+        {
+            return DataTables::eloquent($query)
+                ->editColumn('fullName',function ($data){
+                    return $data->first_name .' '. $data->last_name;
+                })
+                ->toJson();
+        }
+
+        $attendances = $query->get();
         $user = Auth::user();
-        $attendances = StudentsAttendance::orderBy('id', 'desc')->get();
-        if($user->status == 'admin') {
+
+        if($user->status == 'admin')
+        {
             $student_id = Student::where('status', '=', 'Active')->pluck('student_id', 'id');
             $classes = StudentsClass::pluck('class_name', 'id');
-        } elseif($user->status == 'teacher') {
+        } elseif($user->status == 'teacher')
+        {
             $class = StudentsClass::where('class_teacher', '=', $user->username)->get();
+
             if(count($class) == 0) {
                 return redirect()->back();
             }
+
             $student_id = Student::where([['status', '=', 'Active'], ['students_class_id', '=', $class[0]->id]])->pluck('student_id', 'id');
             $classes = StudentsClass::where('class_teacher', '=', $user->username)->pluck('class_name', 'id');
         }
+
         $_attendances = array('Present', 'Absent', 'Leave');
+
+        //Datatable builder
+        $datatable = $builder->columns(StudentsAttendance::datatableColumns());
+
         return view('admin.students.attendance.student_attendance_registers',
-            compact('attendances', 'classes', '_attendances', 'student_id'));
+            compact('datatable', 'attendances', 'classes', '_attendances', 'student_id'));
     }
 
     public function deleteAttendance(Request $request) {

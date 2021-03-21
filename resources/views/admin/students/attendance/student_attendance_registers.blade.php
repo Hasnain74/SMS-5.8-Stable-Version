@@ -104,30 +104,7 @@
 			@endpermission
 
 		<div class="py-2">
-
-			<table id="studentsData_attendance_register" class="export_table table table-striped table-bordered table-responsive-lg">
-				<thead>
-					<tr>
-						<th class="text-center">Student ID</th>
-						<th class="text-center">Student Name</th>
-						<th class="text-center">Attendance</th>
-						<th class="text-center">Date</th>
-					</tr>
-				</thead>
-				<tbody>
-					@if($attendances)
-					@foreach($attendances as $atd)
-					<tr>
-					<td class="text-center">{{ $atd->student_id }}</td>
-					<td class="text-center">{{ $atd->first_name . ' ' . $atd->last_name }}</td>
-					<td class="text-center">{{ $atd->attendance }}</td>
-					<td class="text-center">{{ $atd->date }}</td>
-					</tr>
-					@endforeach
-					@endif
-				</tbody>
-			</table>
-
+			{!! $datatable->table() !!}
 		</div>
 	</div>
 
@@ -238,4 +215,23 @@
 
 
 
+@stop
+
+@section('script')
+	{!! $datatable->scripts() !!}
+	{{--<script>--}}
+		{{--$(function() {--}}
+			{{--$('#studentsData_attendance_register').DataTable({--}}
+				{{--processing: true,--}}
+				{{--serverSide: true,--}}
+				{{--ajax: '{!! route('students.student_attendance_register.data') !!}',--}}
+				{{--columns: [--}}
+					{{--{ data: 'id', name: 'id' },--}}
+					{{--{ data: 'first_name', name: 'first_name' },--}}
+					{{--{ data: 'attendance', name: 'attendance' },--}}
+					{{--{ data: 'date', name: 'date' }--}}
+				{{--]--}}
+			{{--});--}}
+		{{--});--}}
+	{{--</script>--}}
 @stop
