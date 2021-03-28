@@ -66,6 +66,15 @@ class AttendanceController extends Controller
                 ->editColumn('fullName',function ($data){
                     return $data->first_name .' '. $data->last_name;
                 })
+                ->filter(function ($query) {
+                    //Here you receive the filters key/value and add them to the query
+                    if (request()->has('class_id')) {
+                        $query->where('class_id', request('class_id'));
+                    }
+                    if (request()->has('student_id')) {
+                        $query->where('student_id', request('student_id'));
+                    }
+                }, true)
                 ->toJson();
         }
 
@@ -293,7 +302,7 @@ class AttendanceController extends Controller
 
         foreach($attendances as $attendance) {
             $result[] = ['student_id' => $attendance->student_id, 'first_name' => $attendance->first_name,
-            'last_name' => $attendance->last_name, 'class' => $attendance->class_name];
+                'last_name' => $attendance->last_name, 'class' => $attendance->class_name];
         }
 
         return view('admin.students.attendance.attendace_report_print', compact('result', 'attendances', 'date'));

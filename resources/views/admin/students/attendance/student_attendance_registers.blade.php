@@ -9,26 +9,23 @@
 			</div>
 		</nav>
 
-	<!--HEADER-->
-	<header id="main-header" class="py-2 text-white">
-		<div class="ml-4">
+		<!--HEADER-->
+		<header id="main-header" class="py-2 text-white">
+			<div class="ml-4">
 
-			<a href="/" class="btn aqua-gradient float-right mr-4 a-resp">
-				<i class="fas fa-arrow-left i-resp"></i> Back
-			</a>
+				<a href="/" class="btn aqua-gradient float-right mr-4 a-resp">
+					<i class="fas fa-arrow-left i-resp"></i> Back
+				</a>
 
-			<div class="row">
-				<div class="col-md-12 text-center">
-					<h1><i class="fas fa-address-book"></i> Attendance Register</h1>
+				<div class="row">
+					<div class="col-md-12 text-center">
+						<h1><i class="fas fa-address-book"></i> Attendance Register</h1>
+					</div>
 				</div>
+
 			</div>
-
-		</div>
-	</header>
-</div>
-
-
-
+		</header>
+	</div>
 
 	<div class="mx-4 py-4">
 
@@ -39,30 +36,30 @@
 			</div>
 		@endif
 
-			@if ($message = Session::get('update_student_attendance'))
-				<div class="alert dusty-grass-gradient alert-block">
-					<button type="button" class="close" data-dismiss="alert">×</button>
-					<strong>{{ $message }}</strong>
-				</div>
-			@endif
+		@if ($message = Session::get('update_student_attendance'))
+			<div class="alert dusty-grass-gradient alert-block">
+				<button type="button" class="close" data-dismiss="alert">×</button>
+				<strong>{{ $message }}</strong>
+			</div>
+		@endif
 
 
-			{!! Form::open(['method'=>'GET', 'action'=>'AttendanceController@print_attendance_report', 'target'=>'blank']) !!}
+		{!! Form::open(['method'=>'GET', 'action'=>'AttendanceController@print_attendance_report', 'target'=>'blank']) !!}
 
-			<div class="d-flex">
-				<div class="col-md-6">
-					<div class="md-form">
-						{{Form::date('date', null, ['class' => 'form-control'])}}
-					</div>
-				</div>
-		
-				<div class="col-md-6">
-					{!! Form::button(' Print Daily Report', ['type'=>'submit', 
-					'class'=>'fas fa-save btn btn-block dusty-grass-gradient text-dark mt-4']) !!}
+		<div class="d-flex">
+			<div class="col-md-6">
+				<div class="md-form">
+					{{Form::date('date', null, ['class' => 'form-control'])}}
 				</div>
 			</div>
-				
-			{!! Form::close() !!}
+
+			<div class="col-md-6">
+				{!! Form::button(' Print Daily Report', ['type'=>'submit',
+                'class'=>'fas fa-save btn btn-block dusty-grass-gradient text-dark mt-4']) !!}
+			</div>
+		</div>
+
+		{!! Form::close() !!}
 
 		<div class="filterable">
 
@@ -76,11 +73,11 @@
 			</div>
 
 			@permission('create.attendance')
-				<div class="mb-2">
-					<a href="{{route('admin.students.attendance.index')}}">
+			<div class="mb-2">
+				<a href="{{route('admin.students.attendance.index')}}">
 					<button type="button" class="btn purple-gradient px-4"><span class="fas fa-plus-square"></span> Add New Attendance</button>
-					</a>
-				</div>
+				</a>
+			</div>
 			@endpermission
 
 			@permission('view.attendance')
@@ -103,135 +100,127 @@
 			</div>
 			@endpermission
 
-		<div class="py-2">
-			{!! $datatable->table() !!}
+			<div class="py-2">
+				{!! $datatable->table() !!}
+			</div>
 		</div>
+
 	</div>
 
-</div>
+	@permission('edit.attendance')
+	@foreach($attendances as $attendance)
+		<!--EDIT CLASS MODAL-->
+		<div class="modal fade" id="editAttendanceModal{{$attendance->id}}">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
 
-@permission('edit.attendance')
-@foreach($attendances as $attendance)
-	<!--EDIT CLASS MODAL-->
-	<div class="modal fade" id="editAttendanceModal{{$attendance->id}}">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
+					<div class="modal-header header-backgroud text-white">
+						<h5 class="modal-title">Class View</h5>
+						<button class="close" data-dismiss="modal">
+							<span>&times;</span>
+						</button>
+					</div>
+					<div class="container">
 
-				<div class="modal-header header-backgroud text-white">
-					<h5 class="modal-title">Class View</h5>
-					<button class="close" data-dismiss="modal">
-						<span>&times;</span>
-					</button>
-				</div>
-				<div class="container">
-
-				{!! Form::model($attendance, ['method'=>'PATCH', 'action'=>['AttendanceController@update',  $attendance->id]]) !!}
-				<!--CLASS DETAIL-->
-					<div class="row mt-2">
-						<div class="col-md-12">
-							<h3 class="display-4 text-center">Edit Attendance</h3>
-							<div class="form-group">
-								<label for="attendance">Attendance</label>
-								<select class="browser-default custom-select" name="attendance[]">
-									@foreach($_attendances as $_attendance)
-										<option value="{{$_attendance}}" {{$_attendance==$attendance->attendance?'selected':''}}>{{$_attendance}}</option>
-									@endforeach
-								</select>
+					{!! Form::model($attendance, ['method'=>'PATCH', 'action'=>['AttendanceController@update',  $attendance->id]]) !!}
+					<!--CLASS DETAIL-->
+						<div class="row mt-2">
+							<div class="col-md-12">
+								<h3 class="display-4 text-center">Edit Attendance</h3>
+								<div class="form-group">
+									<label for="attendance">Attendance</label>
+									<select class="browser-default custom-select" name="attendance[]">
+										@foreach($_attendances as $_attendance)
+											<option value="{{$_attendance}}" {{$_attendance==$attendance->attendance?'selected':''}}>{{$_attendance}}</option>
+										@endforeach
+									</select>
+								</div>
+								{!! Form::button(' Save Changes', ['type'=>'submit', 'class'=>'btn peach-gradient btn-block mb-3']) !!}
 							</div>
-							{!! Form::button(' Save Changes', ['type'=>'submit', 'class'=>'btn peach-gradient btn-block mb-3']) !!}
 						</div>
+						{!! Form::close() !!}
+
 					</div>
-					{!! Form::close() !!}
 
 				</div>
-
 			</div>
 		</div>
-	</div>
-@endforeach
-@endpermission
+	@endforeach
+	@endpermission
 
 
-@permission('delete.attendance')
-@foreach($attendances as $atd)
-	<div class="modal fade" id="deleteModal">
-		<div class="modal-dialog modal-md">
-			<div class="modal-content">
+	@permission('delete.attendance')
+	@foreach($attendances as $atd)
+		<div class="modal fade" id="deleteModal">
+			<div class="modal-dialog modal-md">
+				<div class="modal-content">
 
-				<div class="modal-header bg-danger text-white">
-					<h5 class="modal-title">Delete Confirmation</h5>
-					<button class="close" data-dismiss="modal">
-						<span class="text-white">&times;</span>
-					</button>
-				</div>
-				<div class="container">
-					<div class="modal-body">
-						<div class="col-md-12">
-							<p class="text-center">Do you really want to delete ?</p>
-							{!! Form::model($atd, ['method'=>'POST', 'action'=>['AttendanceController@deleteAttendance',  $atd->id]]) !!}
-							{!! Form::button(' Delete', ['type'=>'submit', 'class'=>'deleteAttendance btn btn-danger mb-3 float-right']) !!}
-							{!! Form::close() !!}
-							<button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+					<div class="modal-header bg-danger text-white">
+						<h5 class="modal-title">Delete Confirmation</h5>
+						<button class="close" data-dismiss="modal">
+							<span class="text-white">&times;</span>
+						</button>
+					</div>
+					<div class="container">
+						<div class="modal-body">
+							<div class="col-md-12">
+								<p class="text-center">Do you really want to delete ?</p>
+								{!! Form::model($atd, ['method'=>'POST', 'action'=>['AttendanceController@deleteAttendance',  $atd->id]]) !!}
+								{!! Form::button(' Delete', ['type'=>'submit', 'class'=>'deleteAttendance btn btn-danger mb-3 float-right']) !!}
+								{!! Form::close() !!}
+								<button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+							</div>
 						</div>
 					</div>
-				</div>
 
+				</div>
 			</div>
 		</div>
-	</div>
-@endforeach
-@endpermission
+	@endforeach
+	@endpermission
 
 
-@permission('delete.attendance')
-@foreach($attendances as $atd)
-	<div class="modal fade" id="deleteAttendanceModal{{$atd->id}}">
-		<div class="modal-dialog modal-md">
-			<div class="modal-content">
+	@permission('delete.attendance')
+	@foreach($attendances as $atd)
+		<div class="modal fade" id="deleteAttendanceModal{{$atd->id}}">
+			<div class="modal-dialog modal-md">
+				<div class="modal-content">
 
-				<div class="modal-header bg-danger text-white">
-					<h5 class="modal-title">Delete Confirmation</h5>
-					<button class="close" data-dismiss="modal">
-						<span class="text-white">&times;</span>
-					</button>
-				</div>
-				<div class="container">
-					<div class="modal-body">
-						<div class="col-md-12">
-							<p class="text-center">Do you really want to delete ?</p>
-							{!! Form::model($atd, ['method'=>'DELETE', 'action'=>['AttendanceController@destroy',  $atd->id]]) !!}
-							{!! Form::button(' Delete', ['type'=>'submit', 'class'=>'btn btn-danger mb-3 float-right']) !!}
-							{!! Form::close() !!}
-							<button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+					<div class="modal-header bg-danger text-white">
+						<h5 class="modal-title">Delete Confirmation</h5>
+						<button class="close" data-dismiss="modal">
+							<span class="text-white">&times;</span>
+						</button>
+					</div>
+					<div class="container">
+						<div class="modal-body">
+							<div class="col-md-12">
+								<p class="text-center">Do you really want to delete ?</p>
+								{!! Form::model($atd, ['method'=>'DELETE', 'action'=>['AttendanceController@destroy',  $atd->id]]) !!}
+								{!! Form::button(' Delete', ['type'=>'submit', 'class'=>'btn btn-danger mb-3 float-right']) !!}
+								{!! Form::close() !!}
+								<button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+							</div>
 						</div>
 					</div>
-				</div>
 
+				</div>
 			</div>
 		</div>
-	</div>
-@endforeach
-@endpermission
-
-
-
+	@endforeach
+	@endpermission
 @stop
 
 @section('script')
 	{!! $datatable->scripts() !!}
-	{{--<script>--}}
-		{{--$(function() {--}}
-			{{--$('#studentsData_attendance_register').DataTable({--}}
-				{{--processing: true,--}}
-				{{--serverSide: true,--}}
-				{{--ajax: '{!! route('students.student_attendance_register.data') !!}',--}}
-				{{--columns: [--}}
-					{{--{ data: 'id', name: 'id' },--}}
-					{{--{ data: 'first_name', name: 'first_name' },--}}
-					{{--{ data: 'attendance', name: 'attendance' },--}}
-					{{--{ data: 'date', name: 'date' }--}}
-				{{--]--}}
-			{{--});--}}
-		{{--});--}}
-	{{--</script>--}}
+	<script>
+		$(function ()
+		{
+		    //Pass here the fields that you want to filter with and the related selectors
+            DataTableFilter.init("{{ route('student_attendance_register') }}" ,{
+				student_id: $('select[name="student_id_attendance_register"]'),
+				class_id: $('select[name="class_id_attendance_register"]'),
+            });
+        })
+	</script>
 @stop

@@ -272,61 +272,9 @@ $(document).ready(function () {
 
     });
 
-    $('select[name="class_id_attendance_register"]').on('change', function() {
-        var classID = $(this).val();
-        if (classID) {
-            $.ajax({
-                url: '/attendance/ajax/' + classID,
-                type: "GET",
-                dataType: "json",
-                success: function (data) {
-                    var table = $('table[id="studentsData_attendance_register"]');
-                    table.DataTable().destroy();
-                    var markup = '';
-                    markup = '<thead><tr class="filters"><th style="width: 2%" class="align-middle text-center"><input type="checkbox" id="options"></th><th style="width: 15%" class="text-center">Student ID</th> <th style="width: 15%" class="text-center">Student Name</th> <th style="width: 15%" class="text-center">Attendance</th> <th style="width: 15%" class="text-center">Class</th> <th style="width: 15%" class="text-center">Date</th> <th style="width: 15%;" class="align-middle text-center">Actions</th> </tr></thead><tbody>';
-
-                    $.each(data, function (key, value) {
-
-                        markup += '<tr> <td><input class="checkBoxes" type="checkbox" name="checkBoxArray[]" value="' + value.id + '"></td> <td class="text-center align-middle"><input type="hidden" value="' + value.student_id + '" name="student_id[]">' + value.student_id + '</td> <td class="text-center align-middle"><input type="hidden" value="' + value.first_name + '" name="first_name[]"><input type="hidden" value="' + value.last_name + '" name="last_name[]">' + value.first_name + ' ' + value.last_name + '<td class="text-center align-middle"><input type="hidden" value="' + value.attendance + '" name="attendance[]">' + value.attendance + '</td>' + '<td class="text-center align-middle"><input type="hidden" value="' + value.class_name + '" name="class_name[]">' + value.class_name + '</td>' +  '<td class="text-center align-middle"><input type="hidden" value="' + value.date + '" name="date[]">' + value.date + '</td>' + '<td style=" width=12%" class="text-center"> <a data-toggle="modal" data-target="#editAttendanceModal' + value.id + '"""><button title="Edit" class="btn btn-primary"><span class="fas fa-pencil-alt"></span></button></a>  <a data-toggle="modal" data-target="#deleteAttendanceModal' + value.id + '"><button title="Delete" class="btn btn-danger"><span class="fas fa-trash-alt"></span></button></a> </td>' + '</td> </tr>';
-
-                    });
-                    markup += '</tbody>';
-                    var table = $('table[id="studentsData_attendance_register"]');
-                    table.html(markup);
-                    table.DataTable();
-                }
-            });
-        }
-    });
-
-    $('select[name="student_id_attendance_register"]').on('change', function() {
-        var StudentID = $(this).val();
-        if (StudentID) {
-
-            $.ajax({
-
-                url: '/atd/ajax/' + StudentID,
-                type: "GET",
-                dataType: "json",
-                success: function (data) {
-                    var table = $('table[id="studentsData_attendance_register"]');
-                    table.DataTable().destroy();
-                    var markup = '';
-                    markup = '<thead><tr class="filters"><th style="width: 2%" class="align-middle text-center"><input type="checkbox" id="options"></th><th style="width: 15%" class="text-center">Student ID</th> <th style="width: 15%" class="text-center">Student Name</th> <th style="width: 15%" class="text-center">Attendance</th> <th style="width: 15%" class="text-center">Class</th> <th style="width: 15%" class="text-center">Date</th> <th style="width: 15%;" class="align-middle text-center">Actions</th> </tr></thead><tbody>';
-
-                    $.each(data, function (key, value) {
-
-                        markup += '<tr> <td><input class="checkBoxes" type="checkbox" name="checkBoxArray[]" value="' + value.id + '"></td> <td class="text-center align-middle"><input type="hidden" value="' + value.student_id + '" name="student_id[]">' + value.student_id + '</td> <td class="text-center align-middle"><input type="hidden" value="' + value.first_name + '" name="first_name[]"><input type="hidden" value="' + value.last_name + '" name="last_name[]">' + value.first_name + ' ' + value.last_name + '<td class="text-center align-middle"><input type="hidden" value="' + value.attendance + '" name="attendance[]">' + value.attendance + '</td>' + '<td class="text-center align-middle"><input type="hidden" value="' + value.class_name + '" name="class_name[]">' + value.class_name + '</td>' +  '<td class="text-center align-middle"><input type="hidden" value="' + value.date + '" name="date[]">' + value.date + '</td>' + '<td style=" width=12%" class="text-center"> <a data-toggle="modal" data-target="#editAttendanceModal' + value.id + '"""><button title="Edit" class="btn btn-primary"><span class="fas fa-pencil-alt"></span></button></a>  <a data-toggle="modal" data-target="#deleteAttendanceModal' + value.id + '"><button title="Delete" class="btn btn-danger"><span class="fas fa-trash-alt"></span></button></a> </td>' + '</td> </tr>';
-
-                    });
-                    markup += '</tbody>';
-                    var table = $('table[id="studentsData_attendance_register"]');
-                    table.html(markup);
-                    table.DataTable();
-                }
-            });
-        }
-
+    // Change events of both student and class
+    $('select[name="class_id_attendance_register"], select[name="student_id_attendance_register"]').on('change', function() {
+        LaravelDataTables.dataTableBuilder.ajax.reload();
     });
 
     $('table[id="studentsData_attendance_register"]').on('click', '#options', function() {
@@ -391,7 +339,7 @@ $(document).ready(function () {
     });
 
 
-    
+
     $('select[name="teacher_id_teachers_attendance"]').on('change', function() {
         var Teacher_id = $(this).val();
         if (Teacher_id) {

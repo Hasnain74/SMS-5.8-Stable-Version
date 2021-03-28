@@ -67,6 +67,7 @@
 
 
 <script type="text/javascript" src="{!! asset('js/scripts.js') !!}"></script>
+<script type="text/javascript" src="{!! asset('js/datatable-filter.js') !!}"></script>
 
 @yield('script')
 
