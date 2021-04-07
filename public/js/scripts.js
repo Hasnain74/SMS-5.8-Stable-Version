@@ -145,6 +145,34 @@ $(document).ready(function () {
 
 
     //------------------------------------------------------------------------//
+    //--------------------------Students Edit Attendance-------------------//
+    //------------------------------------------------------------------------//
+
+    $('body').off('click', '.open-modal').on('click', '.open-modal',function() {
+        var url = $(this).data('url');
+
+        $.get(url, {}, function (modal) {
+            $(modal).modal('show');
+        })
+
+    });
+
+    //------------------------------------------------------------------------//
+    //--------------------------Students Edit Attendance-------------------//
+    //------------------------------------------------------------------------//
+
+    $('body').off('click', '.post-form').on('click', '.post-form',function() {
+        var form = $(this).closest('form');
+        var modal = $(this).closest('.modal');
+
+        $.post(form.attr('action'), form.serialize(), function (message) {
+            modal.modal('hide');
+            alert(JSON.parse(message));
+        })
+
+    });
+
+    //------------------------------------------------------------------------//
     //--------------------------Students Create Attendance-------------------//
     //------------------------------------------------------------------------//
 

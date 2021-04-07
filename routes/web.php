@@ -293,4 +293,10 @@ Route::group(['middleware'=>'prevent-back-history'], function() {
 
     ]]);
 
+
+    Route::get('/students/attendance/edit/{id}', ['as' => 'students.attendance.edit', 'uses' => 'AttendanceController@edit']);
+    Route::post('/students/attendance/update/{id}', ['as' => 'students.attendance.update', 'uses' => 'AttendanceController@update']);
+    Route::get('/students/attendance/delete/{id}', ['as' => 'students.attendance.delete', 'uses' => 'AttendanceController@delete']);
+    Route::post('/students/attendance/destroy/{id}', ['as' => 'students.attendance.destroy', 'uses' => 'AttendanceController@destroy']);
+    Route::get('/students/attendance/print/{id}', ['as' => 'students.attendance.print', 'uses' => 'AttendanceController@print']);
 });

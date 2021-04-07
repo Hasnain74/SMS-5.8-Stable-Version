@@ -37,6 +37,7 @@ class StudentsAttendance extends Model
             ['data' => 'fullName', 'name' => 'fullName', 'title' => 'Name'],
             ['data' => 'attendance', 'name' => 'attendance', 'title' => 'Attendance'],
             ['data' => 'date', 'name' => 'date', 'title' => 'Date'],
+            ['data' => 'action', 'name' => 'action', 'title' => 'Actions', 'sortable' => false, 'className'=> 'text-right'],
         ];
     }
 

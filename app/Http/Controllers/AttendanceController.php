@@ -75,7 +75,9 @@ class AttendanceController extends Controller
                         $query->where('student_id', request('student_id'));
                     }
                 }, true)
-                ->toJson();
+                ->addColumn('action', function ($data) {
+                    return view('admin.students.attendance._actions', ['id' => $data->id]);
+                })->toJson();
         }
 
         $attendances = $query->get();
@@ -206,9 +208,58 @@ class AttendanceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit()
+    public function edit($id)
     {
+        //Get the object here
+        $attendance = StudentsAttendance::find($id);
 
+        return view('admin.students.attendance.edit', compact('attendance'));
+    }
+
+    /**
+     * Update Attendance
+     *
+     * @param $id
+     * @param Request $request
+     * @return false|string
+     */
+    public function update($id, Request $request)
+    {
+        $attendance = StudentsAttendance::find($id);
+        $data = $request->all();
+
+        //UPDATE THE MODEL HERE
+
+        return json_encode('Attendance updated successfully');
+    }
+
+    /**
+     * Show the form for deleting the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function delete($id)
+    {
+        //Get the object here
+        $attendance = StudentsAttendance::find($id);
+
+        return view('admin.students.attendance.delete', compact('attendance'));
+    }
+
+    /**
+     * Destroy Attendance
+     *
+     * @param $id
+     * @return false|string
+     */
+    public function destroy($id)
+    {
+        $attendance = StudentsAttendance::find($id);
+
+        //DELETE THE MODEL HERE
+
+        return json_encode('Attendance removed successfully');
     }
 
     /**
@@ -218,7 +269,7 @@ class AttendanceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+/*    public function update(Request $request, $id)
     {
         $APIKey = '2bbbd0e93e2a249b20a19534c940d9ddec08ba48';
         $attendance = StudentsAttendance::find($id);
@@ -274,7 +325,7 @@ class AttendanceController extends Controller
         }
         $attendance->update(['attendance' => $request->attendance[0]]);
         return redirect()->back()->with('update_student_attendance','The attendance has been updated successfully !');
-    }
+    }*/
 
     /**
      * Remove the specified resource from storage.
@@ -282,12 +333,12 @@ class AttendanceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+/*    public function destroy($id)
     {
         $atd = StudentsAttendance::findOrFail($id);
         $atd->delete();
         return redirect('/students/student_attendance_register')->with('delete_student_attendance','The attendance has been deleted successfully !');
-    }
+    }*/
 
     public function get_student_attendance_api($id) {
         $user = User::find($id);
