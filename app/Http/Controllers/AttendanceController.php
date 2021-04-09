@@ -102,7 +102,8 @@ class AttendanceController extends Controller
         $_attendances = array('Present', 'Absent', 'Leave');
 
         //Datatable builder
-        $datatable = $builder->columns(StudentsAttendance::datatableColumns());
+        $datatable = $builder->columns(StudentsAttendance::datatableColumns())
+            ->addCheckbox(['class' => 'custom-checkbox'], 0);
 
         return view('admin.students.attendance.student_attendance_registers',
             compact('datatable', 'attendances', 'classes', '_attendances', 'student_id'));
