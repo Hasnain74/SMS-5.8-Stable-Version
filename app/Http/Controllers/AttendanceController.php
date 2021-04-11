@@ -58,6 +58,7 @@ class AttendanceController extends Controller
     public function student_attendance_registers(Builder $builder)
     {
         $query = StudentsAttendance::orderBy('id', 'desc');
+        // dd($query);
 
         //Ajax request made by {!! $datatable->scripts() !!} when the page is ready
         if (request()->ajax())
@@ -65,9 +66,8 @@ class AttendanceController extends Controller
             return DataTables::eloquent($query)
                 ->editColumn('fullName',function ($data){
                     return $data->first_name .' '. $data->last_name;
-                })
-                ->editColumn('checkbox', function ($row) {
-                    return '<input type="checkbox" name="checkboxArray[]" value="'.$row->id.'"/>';
+                })->editColumn('checkbox', function ($row) {
+                    return '<input class="checkBoxes" type="checkbox" name="checkboxArray[]" value="'.$row->id.'"/>';
                 })
                 ->escapeColumns('checkbox')
                 ->filter(function ($query) {
@@ -103,18 +103,25 @@ class AttendanceController extends Controller
             $classes = StudentsClass::where('class_teacher', '=', $user->username)->pluck('class_name', 'id');
         }
 
-        $_attendances = array('Present', 'Absent', 'Leave');
+        // $_attendances = array('Present', 'Absent', 'Leave');
 
+        $values = StudentsAttendance::all();
+       
         //Datatable builder
-        $datatable = $builder->columns(StudentsAttendance::datatableColumns());
+       $datatable = $builder->columns(StudentsAttendance::datatableColumns());
+
+      
 
         return view('admin.students.attendance.student_attendance_registers',
-            compact('datatable', 'attendances', 'classes', '_attendances', 'student_id'));
+            compact('datatable', 'attendances', 'classes', 'student_id'));
     }
 
     public function deleteAttendance(Request $request) {
+        dd($request->all());
         if(!empty($request->checkBoxArray)) {
-            StudentsAttendance::whereIn('id', $request->checkBoxArray)->delete();
+            foreach ($request->checkBoxArray as $id) {
+            StudentsAttendance::where('id', '=', $id)->delete();
+            }
             return redirect()->back()->with('delete_student_attendance','The attendance has been deleted successfully !');
         } else {
             return redirect()->back()->with('delete_student_attendance','The attendance has been deleted successfully !');
@@ -206,7 +213,7 @@ class AttendanceController extends Controller
         //
     }
 
-    /**
+     /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -216,8 +223,8 @@ class AttendanceController extends Controller
     {
         //Get the object here
         $attendance = StudentsAttendance::find($id);
-
-        return view('admin.students.attendance.edit', compact('attendance'));
+        $_attendances = array('Present', 'Absent', 'Leave');
+        return view('admin.students.attendance.edit', compact('attendance', '_attendances'));
     }
 
     /**
@@ -229,55 +236,12 @@ class AttendanceController extends Controller
      */
     public function update($id, Request $request)
     {
-        $attendance = StudentsAttendance::find($id);
-        $data = $request->all();
-
-        //UPDATE THE MODEL HERE
-
-        return json_encode('Attendance updated successfully');
-    }
-
-    /**
-     * Show the form for deleting the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function delete($id)
-    {
-        //Get the object here
-        $attendance = StudentsAttendance::find($id);
-
-        return view('admin.students.attendance.delete', compact('attendance'));
-    }
-
-    /**
-     * Destroy Attendance
-     *
-     * @param $id
-     * @return false|string
-     */
-    public function destroy($id)
-    {
-        $attendance = StudentsAttendance::find($id);
-
-        //DELETE THE MODEL HERE
-
-        return json_encode('Attendance removed successfully');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-/*    public function update(Request $request, $id)
-    {
         $APIKey = '2bbbd0e93e2a249b20a19534c940d9ddec08ba48';
         $attendance = StudentsAttendance::find($id);
         $input = $request->attendance;
+
+        //UPDATE THE MODEL HERE
+
         if ($attendance->attendance == 'Absent') {
             foreach ($input as $atd) {
                 if ($atd == 'Present') {
@@ -328,8 +292,74 @@ class AttendanceController extends Controller
                 'student_id' => $student[0]->student_id, 'class' => $student[0]->students_class_id]);
         }
         $attendance->update(['attendance' => $request->attendance[0]]);
+
         return redirect()->back()->with('update_student_attendance','The attendance has been updated successfully !');
-    }*/
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    // public function update(Request $request, $id)
+    // {
+    //     $APIKey = '2bbbd0e93e2a249b20a19534c940d9ddec08ba48';
+    //     $attendance = StudentsAttendance::find($id);
+    //     $input = $request->attendance;
+    //     if ($attendance->attendance == 'Absent') {
+    //         foreach ($input as $atd) {
+    //             if ($atd == 'Present') {
+    //                 $student = DB::table('students')->where('student_id', '=', $attendance->student_id)->get();
+    //                 $receiver = $student[0]->guardian_phone_no;
+    //                 $sender = 'Hasnain khan';
+    //                 $textmessage = "Dear " . $student[0]->guardian_name . ' We are sorry your child ' . $student[0]->first_name . ' ' . $student[0]->last_name
+    //                     . ' was marked as absent for some reason but now he is present !';
+
+    //                 $url = "http://api.smilesn.com/sendsms?hash=" . $APIKey . "&receivenum=" . $receiver . "&sendernum=" . urlencode($sender) . "&textmessage=" . urlencode($textmessage);
+    //                 $ch = curl_init();
+    //                 $timeout = 30;
+    //                 curl_setopt($ch, CURLOPT_URL, $url);
+    //                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    //                 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+    //                 $response = curl_exec($ch);
+    //                 curl_close($ch);
+
+    //                 Sms::create(['message' => $textmessage,
+    //                     'sent_by' => ucfirst(Auth::user()->username),
+    //                     'student_name' => $student[0]->first_name . ' ' . $student[0]->last_name,
+    //                     'guardian_phone_no' => $student[0]->guardian_phone_no,
+    //                     'student_id' => $student[0]->student_id, 'class' => $student[0]->students_class_id]);
+    //             }
+    //         }
+    //     }
+
+    //     if ($attendance->attendance == 'Present' || $attendance->attendance == 'Leave') {
+    //         $student = DB::table('students')->where('student_id', '=', $attendance->student_id)->get();
+    //         $receiver = $student[0]->guardian_phone_no;
+    //         $sender = 'Hasnain khan';
+    //         $textmessage = "Dear " . $student[0]->guardian_name.' Your child '. $student[0]->first_name.' '.$student[0]->last_name
+    //             .' is Absent today in the class';
+
+    //         $url = "http://api.smilesn.com/sendsms?hash=" . $APIKey . "&receivenum=" . $receiver . "&sendernum=" . urlencode($sender) . "&textmessage=" . urlencode($textmessage);
+    //         $ch = curl_init();
+    //         $timeout = 30;
+    //         curl_setopt($ch, CURLOPT_URL, $url);
+    //         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    //         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+    //         $response = curl_exec($ch);
+    //         curl_close($ch);
+
+    //         Sms::create(['message' => $textmessage,
+    //             'sent_by' => ucfirst(Auth::user()->username),
+    //             'student_name' => $student[0]->first_name . ' ' . $student[0]->last_name,
+    //             'guardian_phone_no' => $student[0]->guardian_phone_no,
+    //             'student_id' => $student[0]->student_id, 'class' => $student[0]->students_class_id]);
+    //     }
+    //     $attendance->update(['attendance' => $request->attendance[0]]);
+    //     return redirect()->back()->with('update_student_attendance','The attendance has been updated successfully !');
+    // }
 
     /**
      * Remove the specified resource from storage.
@@ -337,12 +367,41 @@ class AttendanceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-/*    public function destroy($id)
+    // public function destroy($id)
+    // {
+    //     $atd = StudentsAttendance::findOrFail($id);
+    //     $atd->delete();
+    //     return redirect('/students/student_attendance_register')->with('delete_student_attendance','The attendance has been deleted successfully !');
+    // }
+
+      /**
+     * Show the form for deleting the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function delete($id)
     {
-        $atd = StudentsAttendance::findOrFail($id);
-        $atd->delete();
-        return redirect('/students/student_attendance_register')->with('delete_student_attendance','The attendance has been deleted successfully !');
-    }*/
+        //Get the object here
+        $attendance = StudentsAttendance::find($id);
+        return view('admin.students.attendance.delete', compact('attendance'));
+    }
+
+    /**
+     * Destroy Attendance
+     *
+     * @param $id
+     * @return false|string
+     */
+    public function destroy($id)
+    {
+        $attendance = StudentsAttendance::find($id);
+
+        $attendance->delete();
+
+        return json_encode('Attendance removed successfully');
+    }
+
 
     public function get_student_attendance_api($id) {
         $user = User::find($id);
