@@ -144,7 +144,8 @@ $(document).ready(function () {
     });
 
 
-    //------------------------------------------------------------------------//
+
+     //------------------------------------------------------------------------//
     //--------------------------Students Edit Attendance-------------------//
     //------------------------------------------------------------------------//
 
@@ -158,7 +159,7 @@ $(document).ready(function () {
     });
 
     //------------------------------------------------------------------------//
-    //--------------------------Students Edit Attendance-------------------//
+    //--------------------------Students Delete Attendance-------------------//
     //------------------------------------------------------------------------//
 
     $('body').off('click', '.post-form').on('click', '.post-form',function() {
@@ -167,10 +168,13 @@ $(document).ready(function () {
 
         $.post(form.attr('action'), form.serialize(), function (message) {
             modal.modal('hide');
-            alert(JSON.parse(message));
+            location.reload(); 
         })
 
     });
+
+
+
 
     //------------------------------------------------------------------------//
     //--------------------------Students Create Attendance-------------------//
@@ -282,16 +286,18 @@ $(document).ready(function () {
     //------------------------------------------------------------------------//
 
 
-    $(".deleteAttendance").click(function(){
+    $(".deleteAttendance").click(function(e){
         var token = $('[name="csrf-token"]').attr('content');
         var checkBoxArray = [];
 
         $('[name="checkBoxArray[]"]:checked').each(function(){ checkBoxArray.push($(this).val()); });
+        console.log($('[name="checkBoxArray[]"]:checked').length);
+        e.preventDefault();
         $.ajax(
             {
                 url: "/attendance/delete",
-                type: 'POST',
-                dataType: "JSON",
+                type: 'DELETE',
+                // dataType: "JSON",
                 data: {
                     "_token": token,
                     "checkBoxArray": checkBoxArray,
@@ -305,8 +311,7 @@ $(document).ready(function () {
         LaravelDataTables.dataTableBuilder.ajax.reload();
     });
 
-    $('table[id="studentsData_attendance_register"]').on('click', '#options', function() {
-
+    $('body').on('click', '#dataTablesCheckbox', function() {
         if( $(this).is(':checked') )
         {
             $('.checkBoxes').each(function() {
@@ -317,7 +322,6 @@ $(document).ready(function () {
                 $(this).prop('checked', false);
             });
         }
-
     });
 
 
