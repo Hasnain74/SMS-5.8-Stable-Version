@@ -63,12 +63,13 @@ class AttendanceController extends Controller
         if (request()->ajax())
         {
             return DataTables::eloquent($query)
-                ->editColumn('checkbox', function ($row) {
-                    return '<input type="checkbox" name="registrations[]" value="'.$row->id.'"/>';
-                })
                 ->editColumn('fullName',function ($data){
                     return $data->first_name .' '. $data->last_name;
-                })->escapeColumns('checkbox')
+                })
+                ->editColumn('checkbox', function ($row) {
+                    return '<input type="checkbox" name="checkboxArray[]" value="'.$row->id.'"/>';
+                })
+                ->escapeColumns('checkbox')
                 ->filter(function ($query) {
                     //Here you receive the filters key/value and add them to the query
                     if (request()->has('class_id')) {
