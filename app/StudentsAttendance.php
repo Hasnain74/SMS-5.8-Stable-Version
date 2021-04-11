@@ -34,11 +34,12 @@ class StudentsAttendance extends Model
     public static function datatableColumns() {
         return [
             ['data' => 'checkbox', 'name' => 'checkbox', 'searchable'=> false, 'orderable'=> false, 'title' => '<input type="checkbox" id="dataTablesCheckbox">'],
-            ['data' => 'id', 'name' => 'id', 'title' => 'Id'],
-            ['data' => 'fullName', 'name' => 'fullName', 'title' => 'Name'],
-            ['data' => 'attendance', 'name' => 'attendance', 'title' => 'Attendance'],
-            ['data' => 'date', 'name' => 'date', 'title' => 'Date'],
-            ['data' => 'action', 'name' => 'action', 'title' => 'Actions', 'sortable' => false, 'className'=> 'text-right'],
+            ['data' => 'id', 'name' => 'id', 'title' => 'Id', 'className'=> 'text-center', 'visible' => false],
+            ['data' => 'fullName', 'name' => 'fullName', 'title' => 'Name', 'className'=> 'text-center'],
+            ['data' => 'class_name', 'name' => 'class_name', 'title' => 'Class Name', 'className'=> 'text-center'],
+            ['data' => 'attendance', 'name' => 'attendance', 'title' => 'Attendance', 'className'=> 'text-center'],
+            ['data' => 'date', 'name' => 'date', 'title' => 'Date' ,'className'=> 'text-center'],
+            ['data' => 'action', 'name' => 'action', 'title' => 'Actions', 'sortable' => false, 'className'=> 'text-center'],
         ];
     }
 
