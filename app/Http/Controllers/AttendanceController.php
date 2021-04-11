@@ -68,7 +68,7 @@ class AttendanceController extends Controller
                 })
                 ->editColumn('fullName',function ($data){
                     return $data->first_name .' '. $data->last_name;
-                })
+                })->escapeColumns('checkbox')
                 ->filter(function ($query) {
                     //Here you receive the filters key/value and add them to the query
                     if (request()->has('class_id')) {
