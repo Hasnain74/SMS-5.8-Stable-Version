@@ -33,6 +33,7 @@ class StudentsAttendance extends Model
      */
     public static function datatableColumns() {
         return [
+            ['data' => 'checkbox', 'name' => 'checkbox', 'searchable'=> false, 'orderable'=> false, 'title' => '<input type="checkbox" id="dataTablesCheckbox">'],
             ['data' => 'id', 'name' => 'id', 'title' => 'Id'],
             ['data' => 'fullName', 'name' => 'fullName', 'title' => 'Name'],
             ['data' => 'attendance', 'name' => 'attendance', 'title' => 'Attendance'],

@@ -63,6 +63,9 @@ class AttendanceController extends Controller
         if (request()->ajax())
         {
             return DataTables::eloquent($query)
+                ->editColumn('checkbox', function ($row) {
+                    return '<input type="checkbox" name="registrations[]" value="'.$row->id.'"/>';
+                })
                 ->editColumn('fullName',function ($data){
                     return $data->first_name .' '. $data->last_name;
                 })
@@ -102,8 +105,7 @@ class AttendanceController extends Controller
         $_attendances = array('Present', 'Absent', 'Leave');
 
         //Datatable builder
-        $datatable = $builder->columns(StudentsAttendance::datatableColumns())
-            ->addCheckbox(['class' => 'custom-checkbox'], 0);
+        $datatable = $builder->columns(StudentsAttendance::datatableColumns());
 
         return view('admin.students.attendance.student_attendance_registers',
             compact('datatable', 'attendances', 'classes', '_attendances', 'student_id'));
