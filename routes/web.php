@@ -22,6 +22,8 @@ Route::group(['middleware'=>'prevent-back-history'], function() {
     Route::get('/student_profile', 'StudentProfileController@studentData');
 
     //ROUTES FOR STUDENTS===========================================================================
+    Route::get('/students/attendance/print/{id}', ['as' => 'students.attendance.print', 'uses' => 'AttendanceController@print']);
+   
     Route::get('/students/export', 'StudentsController@export');
     Route::get('students/edit_student/{id}', ['as' => 'edit_student', 'uses' => 'StudentsController@edit']);
     Route::delete('/students/delete/std', 'StudentsController@deleteStudents');
@@ -36,6 +38,12 @@ Route::group(['middleware'=>'prevent-back-history'], function() {
         'create' => 'admin.students.create'
     ]]);
 
+    Route::get('/students/attendance/print/{id}', ['as' => 'students.attendance.print', 'uses' => 'AttendanceController@print']);
+    Route::get('/students/attendance/edit/{id}', ['as' => 'students.attendance.edit', 'uses' => 'AttendanceController@edit']);
+    Route::post('/students/attendance/update/{id}', ['as' => 'students.attendance.update', 'uses' => 'AttendanceController@update']);
+    Route::get('/students/attendance/delete/{id}', ['as' => 'students.attendance.delete', 'uses' => 'AttendanceController@delete']);
+    Route::delete('/students/attendance/destroy/{id}', ['as' => 'students.attendance.destroy', 'uses' => 'AttendanceController@destroy']);
+
     Route::get('students/student_attendance_register', ['as' => 'student_attendance_register', 'uses' => 'AttendanceController@student_attendance_registers']);
     Route::get('students/edit_class_register', ['as' => 'edit_class_register', 'uses' => 'AttendanceController@edit']);
     Route::get('students/getStudents', ['as' => 'getStudents', 'uses' => 'AttendanceController@getStudents']);
@@ -46,7 +54,7 @@ Route::group(['middleware'=>'prevent-back-history'], function() {
     Route::get('attendance/ajax/{id}', array('as' => 'attendance.ajax', 'uses' => 'AttendanceController@myAttendanceAjax'));
     Route::get('atd/ajax/{id}', array('as' => 'atd.ajax', 'uses' => 'AttendanceController@myAtdAjax'));
     Route::post('students/attendance', 'AttendanceController@store');
-    Route::post('attendance/delete', 'AttendanceController@deleteAttendance');
+    Route::delete('attendance/delete', 'AttendanceController@deleteAttendance');
     Route::delete('students/delete', 'StudentsController@deleteStudents');
     Route::get('/downloadPdf/{id}', 'StudentsController@downloadPDF');
     Route::delete('students/student_accounts/{id}', 'TeacherController@delete_account');
@@ -293,10 +301,4 @@ Route::group(['middleware'=>'prevent-back-history'], function() {
 
     ]]);
 
-
-    Route::get('/students/attendance/edit/{id}', ['as' => 'students.attendance.edit', 'uses' => 'AttendanceController@edit']);
-    Route::post('/students/attendance/update/{id}', ['as' => 'students.attendance.update', 'uses' => 'AttendanceController@update']);
-    Route::get('/students/attendance/delete/{id}', ['as' => 'students.attendance.delete', 'uses' => 'AttendanceController@delete']);
-    Route::post('/students/attendance/destroy/{id}', ['as' => 'students.attendance.destroy', 'uses' => 'AttendanceController@destroy']);
-    Route::get('/students/attendance/print/{id}', ['as' => 'students.attendance.print', 'uses' => 'AttendanceController@print']);
 });
