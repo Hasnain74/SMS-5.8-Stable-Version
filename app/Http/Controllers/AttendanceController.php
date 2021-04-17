@@ -402,6 +402,18 @@ class AttendanceController extends Controller
         return json_encode('Attendance removed successfully');
     }
 
+    /**
+     * Destroy Attendance
+     *
+     * @param $id
+     * @return false|string
+     */
+    public function destroyAll(Request $request)
+    {
+        StudentsAttendance::destroy($request->checkBoxArray);
+        return json_encode(count($request->checkBoxArray).' Attendance(s) removed successfully');
+    }
+
 
     public function get_student_attendance_api($id) {
         $user = User::find($id);

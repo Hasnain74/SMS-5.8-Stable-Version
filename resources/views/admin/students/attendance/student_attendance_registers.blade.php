@@ -107,54 +107,10 @@
 
 	</div>
 
-	@permission('edit.attendance')
-	@foreach($attendances as $attendance)
-		<!--EDIT CLASS MODAL-->
-		<div class="modal fade" id="editAttendanceModal{{$attendance->id}}">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-
-					<div class="modal-header header-backgroud text-white">
-						<h5 class="modal-title">Class View</h5>
-						<button class="close" data-dismiss="modal">
-							<span>&times;</span>
-						</button>
-					</div>
-					<div class="container">
-
-					{!! Form::model($attendance, ['method'=>'PATCH', 'action'=>['AttendanceController@update',  $attendance->id]]) !!}
-					<!--CLASS DETAIL-->
-						<div class="row mt-2">
-							<div class="col-md-12">
-								<h3 class="display-4 text-center">Edit Attendance</h3>
-								<div class="form-group">
-									<label for="attendance">Attendance</label>
-									<select class="browser-default custom-select" name="attendance[]">
-										@foreach($_attendances as $_attendance)
-											<option value="{{$_attendance}}" {{$_attendance==$attendance->attendance?'selected':''}}>{{$_attendance}}</option>
-										@endforeach
-									</select>
-								</div>
-								{!! Form::button(' Save Changes', ['type'=>'submit', 'class'=>'btn peach-gradient btn-block mb-3']) !!}
-							</div>
-						</div>
-						{!! Form::close() !!}
-
-					</div>
-
-				</div>
-			</div>
-		</div>
-	@endforeach
-	@endpermission
-
-
 	@permission('delete.attendance')
-	@foreach($attendances as $atd)
 		<div class="modal fade" id="deleteModal">
 			<div class="modal-dialog modal-md">
 				<div class="modal-content">
-
 					<div class="modal-header bg-danger text-white">
 						<h5 class="modal-title">Delete Confirmation</h5>
 						<button class="close" data-dismiss="modal">
@@ -165,9 +121,10 @@
 						<div class="modal-body">
 							<div class="col-md-12">
 								<p class="text-center">Do you really want to delete ?</p>
-								{!! Form::model($atd, ['method'=>'POST', 'action'=>['AttendanceController@deleteAttendance',  $atd->id]]) !!}
-								{!! Form::button(' Delete', ['type'=>'submit', 'class'=>'deleteAttendance btn btn-danger mb-3 float-right']) !!}
-								{!! Form::close() !!}
+								<form method="DELETE" action="/students/attendance/destroy_all">
+									@csrf
+									<button type="button" class="btn btn-danger mb-3 float-right deleteAttendance"> Delete</button>
+								</form>
 								<button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
 							</div>
 						</div>
@@ -176,7 +133,6 @@
 				</div>
 			</div>
 		</div>
-	@endforeach
 	@endpermission
 
 

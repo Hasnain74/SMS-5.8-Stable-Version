@@ -43,6 +43,7 @@ Route::group(['middleware'=>'prevent-back-history'], function() {
     Route::post('/students/attendance/update/{id}', ['as' => 'students.attendance.update', 'uses' => 'AttendanceController@update']);
     Route::get('/students/attendance/delete/{id}', ['as' => 'students.attendance.delete', 'uses' => 'AttendanceController@delete']);
     Route::delete('/students/attendance/destroy/{id}', ['as' => 'students.attendance.destroy', 'uses' => 'AttendanceController@destroy']);
+    Route::delete('/students/attendance/destroy_all', ['as' => 'students.attendance.destroy.all', 'uses' => 'AttendanceController@destroyAll']);
 
     Route::get('students/student_attendance_register', ['as' => 'student_attendance_register', 'uses' => 'AttendanceController@student_attendance_registers']);
     Route::get('students/edit_class_register', ['as' => 'edit_class_register', 'uses' => 'AttendanceController@edit']);

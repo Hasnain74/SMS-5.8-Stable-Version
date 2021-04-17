@@ -163,18 +163,23 @@ $(document).ready(function () {
     //------------------------------------------------------------------------//
 
     $('body').off('click', '.post-form').on('click', '.post-form',function() {
-        var form = $(this).closest('form');
         var modal = $(this).closest('.modal');
 
-        $.post(form.attr('action'), form.serialize(), function (message) {
-            modal.modal('hide');
-            location.reload(); 
-        })
+        var form  = $(this).closest('form');
+        var action = form.attr('action');
+        var method = form.attr('method');
 
+        $.ajax({
+            url: action,
+            type: method,
+            data: form.serialize(),
+            success: function (message) {
+                modal.modal('hide');
+                alert(message);
+                window.LaravelDataTables["dataTableBuilder"].ajax.reload();
+            }
+        });
     });
-
-
-
 
     //------------------------------------------------------------------------//
     //--------------------------Students Create Attendance-------------------//
@@ -287,23 +292,34 @@ $(document).ready(function () {
 
 
     $(".deleteAttendance").click(function(e){
+        e.preventDefault();
+
         var token = $('[name="csrf-token"]').attr('content');
         var checkBoxArray = [];
 
-        $('[name="checkBoxArray[]"]:checked').each(function(){ checkBoxArray.push($(this).val()); });
-        console.log($('[name="checkBoxArray[]"]:checked').length);
-        e.preventDefault();
-        $.ajax(
-            {
-                url: "/attendance/delete",
-                type: 'DELETE',
-                // dataType: "JSON",
-                data: {
-                    "_token": token,
-                    "checkBoxArray": checkBoxArray,
-                },
-            });
+        $('[name="checkboxArray[]"]:checked').each(function(){
+            checkBoxArray.push($(this).val());
+        });
 
+        var modal = $(this).closest('.modal');
+
+        var form  = $(this).closest('form');
+        var action = form.attr('action');
+        var method = form.attr('method');
+
+        $.ajax({
+            url: action,
+            type: method,
+            data: {
+                "_token": token,
+                "checkBoxArray": checkBoxArray,
+            },
+            success: function (message) {
+                modal.modal('hide');
+                alert(message);
+                window.LaravelDataTables["dataTableBuilder"].ajax.reload();
+            }
+        });
     });
 
     // Change events of both student and class
