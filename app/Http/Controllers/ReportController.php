@@ -22,6 +22,8 @@ use App\Http\Requests\ReportRequest;
 use Illuminate\Support\Arr;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportsExport;
+use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\Html\Builder;
 
 class ReportController extends Controller
 {
@@ -30,7 +32,7 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Builder $builder)
     {
         $user = Auth::user();
         $classes = StudentsClass::where('class_teacher', '=', $user->username)->pluck('class_name', 'id');
@@ -39,7 +41,7 @@ class ReportController extends Controller
         } else {
             $classes = StudentsClass::where('class_teacher', '=', $user->username)->pluck('class_name', 'id');
         }
-        $reports = Report::all();
+        
         $report = Report::orderBy('id', 'desc')->get();
         $rep_cat = ReportCategories::pluck('name', 'id')->all();
         $student_id = Student::where('status', '=', 'Active')->pluck('student_id', 'id');
@@ -52,8 +54,41 @@ class ReportController extends Controller
             $years_array[] = $y;
         }
         $unique_array = array_unique($years_array);
-        return view('admin.reports.index', compact('classes', 'reports', 'rep_cat', 'student_id', 'report', 'dmc_setup',
-    'unique_array'));
+
+
+
+        $reports = Report::all();
+
+
+        $query = Report::orderBy('id', 'desc');
+
+        //Ajax request made by {!! $datatable->scripts() !!} when the page is ready
+        if (request()->ajax())
+        {
+            return DataTables::eloquent($query)
+                -> editColumn('checkbox', function ($row) {
+                    return '<input class="checkBoxes" type="checkbox" name="checkboxArray[]" value="'.$row->id.'"/>';
+                })
+                ->escapeColumns('checkbox')
+                // ->filter(function ($query) {
+                //     //Here you receive the filters key/value and add them to the query
+                //     if (request()->has('teacher_id')) {
+                //         $query->where('teacher_id', request('teacher_id'));
+                //     }
+                // }, true)
+                ->addColumn('action', function ($data) {
+                    return view('admin.reports._actions', ['id' => $data->id]);
+                })
+                ->toJson();
+        }
+
+        $students = $query->get();
+
+       //Datatable builder
+       $datatable = $builder->columns(Report::datatableColumns());
+
+        return view('admin.reports.index', compact('classes', 'datatable', 'rep_cat', 'student_id', 'report', 'dmc_setup',
+    'unique_array', 'reports'));
     }
 
     public function subject_marks() {
@@ -693,7 +728,8 @@ class ReportController extends Controller
      */
     public function edit($id)
     {
-        //
+        $report = Report::find($id);
+        return view('admin.reports._edit', compact('report'));
     }
 
     /**
