@@ -201,6 +201,10 @@ Route::group(['middleware'=>'prevent-back-history'], function() {
 
     Route::delete('reports/delete', 'ReportController@deleteReport');
     
+    
+    Route::get('reports/edit/{id}', ['as' => 'reports.edit', 'uses' => 'ReportController@edit']);
+    Route::patch('/reports/update/{id}', ['as' => 'reports.update', 'uses' => 'ReportController@update']);
+    
 
     Route::resource('admin/reports', 'ReportController', ['names' => [
 
